@@ -1,0 +1,9 @@
+{
+    "name": "pwa-project",
+    "short_name": "pwa-project",
+    "icons": [],
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#FFFFFF",
+    "theme_color": "#000000"
+}
