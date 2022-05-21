@@ -1,21 +1,42 @@
-var cacheName = "v3";
+var cacheName = "v4";
 var filesToCache = ["/offline.html"]
 let SWPort;
+let SWactivated = false;
+let SWinstalled = false;
+
+self.addEventListener("message", evt => {
+    if(evt.data && evt.data.type === 'INIT_PORT'){
+        SWPort = evt.ports[0];
+
+        if(SWinstalled){
+            SWPort.postMessage({payload: "Service Worker Installed"})
+        }
+        if(SWactivated){
+            SWPort.postMessage({payload: "Service Worker Activated"})
+        }
+        SWPort.postMessage({payload: "Initialize Port"})
+        console.log("Message from Window received => Initialize Port")
+    }
+})
+
 
 self.addEventListener("install", fetchEvent => {
-    console.log("SW - Install")
+    SWinstalled = true;
+
     fetchEvent.waitUntil(
         caches
             .open(cacheName)
             .then(function(cache) {
-                console.log("installed");
                 return cache.addAll(filesToCache);
             })
     )
 })
 
 this.addEventListener('fetch', evt => {
-    console.log("SW - fetch")
+    if(SWPort != undefined){
+        SWPort.postMessage({payload: "Fetch Data"})
+    }
+
     evt.respondWith(
         caches.match(evt.request).then(function(response) {
             return response || fetch(evt.request);
@@ -26,7 +47,8 @@ this.addEventListener('fetch', evt => {
 });
 
 self.addEventListener("activate", evt => {
-    console.log("SW - Activate")
+    SWactivated = true;
+
     evt.waitUntil(
         caches.keys().then((keyList) => {
             return Promise.all(keyList.map((key) => {
@@ -38,12 +60,7 @@ self.addEventListener("activate", evt => {
     )
 })
 
-self.addEventListener("message", evt => {
-    if(evt.data && evt.data.type === 'INIT_PORT'){
-        SWPort = evt.ports[0];
-        console.log("Message from Window received => Initialize Port")
-    }
-})
+
 
 
 

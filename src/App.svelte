@@ -1,10 +1,26 @@
 <script>
-	export let name;
+	export let states = [];
+
+	const messageChannel = new MessageChannel();
+
+	navigator.serviceWorker.controller.postMessage({type: 'INIT_PORT'}, [
+			messageChannel.port2,
+		])
+
+	messageChannel.port1.onmessage = (evt) => {
+		console.log("receiving Message")
+		states.push(evt.data.payload);
+		states = states;
+	}
+
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>PWA</h1>
+	<h2>Event Log:</h2>
+	{#each states as state}
+		<p> {state} </p>
+	{/each}
 </main>
 
 <style>

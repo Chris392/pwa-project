@@ -23,19 +23,9 @@
     			console.log('Registrierung erfolgreich.');
   			}).catch(function(error) {
     			// Registrierung fehlgeschlagen
-    			console.log('Registrierung fehlgeschlagen mit ' + error);
+    			console.log('Registrierung fehlgeschlagen: ' + error);
   			});
 		};
-
-		const messageChannel = new MessageChannel();
-		
-		navigator.serviceWorker.controller.postMessage({type: 'INIT_PORT'}, [
-			messageChannel.port2,
-		])
-
-		messageChannel.port1.onmessage = (evt) => {
-			console.log(evt.data.payload);
-		}
 	</script>
 </body>
 </html>
