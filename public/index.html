@@ -26,6 +26,16 @@
     			console.log('Registrierung fehlgeschlagen mit ' + error);
   			});
 		};
+
+		const messageChannel = new MessageChannel();
+		
+		navigator.serviceWorker.controller.postMessage({type: 'INIT_PORT'}, [
+			messageChannel.port2,
+		])
+
+		messageChannel.port1.onmessage = (evt) => {
+			console.log(evt.data.payload);
+		}
 	</script>
 </body>
 </html>

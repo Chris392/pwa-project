@@ -1,5 +1,6 @@
-var cacheName = "v2";
+var cacheName = "v3";
 var filesToCache = ["/offline.html"]
+let SWPort;
 
 self.addEventListener("install", fetchEvent => {
     console.log("SW - Install")
@@ -13,9 +14,8 @@ self.addEventListener("install", fetchEvent => {
     )
 })
 
-this.addEventListener('fetch', function (evt) {
+this.addEventListener('fetch', evt => {
     console.log("SW - fetch")
-    console.log(evt.request)
     evt.respondWith(
         caches.match(evt.request).then(function(response) {
             return response || fetch(evt.request);
@@ -31,11 +31,19 @@ self.addEventListener("activate", evt => {
         caches.keys().then((keyList) => {
             return Promise.all(keyList.map((key) => {
                 if (key !== cacheName) {
-                  console.log('[SW - Remove old cache', key);
                   return caches.delete(key);
                 }
               }));
         })
     )
 })
+
+self.addEventListener("message", evt => {
+    if(evt.data && evt.data.type === 'INIT_PORT'){
+        SWPort = evt.ports[0];
+        console.log("Message from Window received => Initialize Port")
+    }
+})
+
+
 
