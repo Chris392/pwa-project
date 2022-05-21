@@ -1,5 +1,5 @@
-var cacheName = "v4";
-var filesToCache = ["/offline.html"]
+var cacheName = "v5";
+var filesToCache = ["/index.html"]
 let SWPort;
 let SWactivated = false;
 let SWinstalled = false;

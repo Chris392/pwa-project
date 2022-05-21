@@ -3,9 +3,15 @@
 
 	const messageChannel = new MessageChannel();
 
-	navigator.serviceWorker.controller.postMessage({type: 'INIT_PORT'}, [
+	let defferedPromt;
+
+	let installBtnVisible = false;
+
+	if(navigator.serviceWorker.controller != null){
+		navigator.serviceWorker.controller.postMessage({type: 'INIT_PORT'}, [
 			messageChannel.port2,
 		])
+	}
 
 	messageChannel.port1.onmessage = (evt) => {
 		console.log("receiving Message")
@@ -13,14 +19,29 @@
 		states = states;
 	}
 
+	window.addEventListener('beforeinstallpromt', (evt) => {
+		console.log("beforeInstallation")
+		defferedPromt = evt;
+	})
+
+	function installPWA() {
+		if(!defferedPromt) {
+			installBtnVisible = true;
+			defferedPromt.promt();
+		}
+	}
+
 </script>
 
 <main>
-	<h1>PWA</h1>
+	<h1>Demo PWA</h1>
 	<h2>Event Log:</h2>
 	{#each states as state}
 		<p> {state} </p>
 	{/each}
+	{#if installBtnVisible}
+	<button class="installBtn " on:click={installPWA}>Install PWA</button>
+	{/if}
 </main>
 
 <style>
