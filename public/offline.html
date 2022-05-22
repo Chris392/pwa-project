@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+
+	<title>Demo PWA</title>
+
+	<link rel='icon' type='image/png' href='/favicon.png'>
+	<link rel='stylesheet' href='/global.css'>
+	<link rel='stylesheet' href='/build/bundle.css'>
+	<link rel='manifest' href='./manifest.json'>
+
+	<script defer src='/build/bundle.js'></script>
+</head>
+
+<body>
+    <h1>You're Offline</h1>
+    <img src="question-mark.png" alt="question-mark">
+    <p>You're last Question was:</p>
+    <p id="question"></p>
+    <p>the answer was:</p>
+    <p id="answer"></p>
+
+    <script>
+        fetch('https://opentdb.com/api.php?amount=1&type=boolean')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('question').innerHTML = data.results[0].question
+                document.getElementById('answer').innerHTML = data.results[0].correct_answer
+            })
+    </script>
+</body>
+</html>

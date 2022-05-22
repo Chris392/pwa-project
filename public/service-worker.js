@@ -1,5 +1,5 @@
-var cacheName = "v6";
-var filesToCache = ["/index.html", "/question-mark.png"]
+var cacheName = "v9";
+var filesToCache = ["/offline.html"]
 let SWPort;
 let SWactivated = false;
 let SWinstalled = false;
@@ -32,16 +32,34 @@ self.addEventListener("install", fetchEvent => {
     )
 })
 
+console.log("ONINE",navigator.onLine)
+
 this.addEventListener('fetch', evt => {
     if(SWPort != undefined){
         SWPort.postMessage({payload: "Fetch Data"})
     }
 
+    if(evt.request.url.slice(0,19) === "https://opentdb.com"){
+        evt.waitUntil(
+            caches
+                .open(cacheName)
+                .then(function(cache) {
+                    if(navigator.onLine) {
+                        cache.add(evt.request);
+                    } else {
+                        return cache.add(evt.request);
+                    }
+                })
+        )
+    }
+
     evt.respondWith(
         caches.match(evt.request).then(function(response) {
+            console.log("response",response)
             return response || fetch(evt.request);
         }).catch(function() {
-            return caches.match(["/index.html", "/question-mark.png"])
+            console.log("2")
+            return caches.match("/offline.html")
         })
     )
 });
