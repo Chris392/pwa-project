@@ -1,5 +1,5 @@
-var cacheName = "v5";
-var filesToCache = ["/index.html"]
+var cacheName = "v6";
+var filesToCache = ["/index.html", "/question-mark.png"]
 let SWPort;
 let SWactivated = false;
 let SWinstalled = false;
@@ -41,7 +41,7 @@ this.addEventListener('fetch', evt => {
         caches.match(evt.request).then(function(response) {
             return response || fetch(evt.request);
         }).catch(function() {
-            return caches.match("/index.html")
+            return caches.match(["/index.html", "/question-mark.png"])
         })
     )
 });

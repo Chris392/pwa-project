@@ -26,6 +26,7 @@
 				if(sub !== null){
 					permissionGranted = true;
 					isSubscribed = true;
+					pushBtnVisible = false;
 				}
 			})
 		}).catch(function(error) {
