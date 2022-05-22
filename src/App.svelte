@@ -110,11 +110,45 @@
 		})
 	}
 
+	// Trivia Api
+
+	let question = "";
+	let answer;
+	let showAnswer = false;
+
+	newQuestion();
+
+	function newQuestion(){
+		fetch('https://opentdb.com/api.php?amount=1&type=boolean')
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+			console.log(data.results[0].question)
+			question = data.results[0].question
+			answer = data.results[0].correct_answer;
+		})
+
+		showAnswer = false;
+	}
 
 </script>
 
 <main>
 	<h1>Demo PWA</h1>
+
+	<h2>Random Question:</h2>
+	<p>{@html question}</p>
+	<p>true or false?</p>
+
+	{#if !showAnswer}
+		<button on:click={() => {showAnswer = true}}>Show Answer</button>
+	{:else}
+		<p>{answer}</p>
+	{/if}
+
+	<div>
+		<button on:click={newQuestion}>New Question</button>
+	</div>
 
 	<h2>PWA Configuration:</h2>
 	{#if installBtnVisible}
