@@ -136,6 +136,7 @@
 <main>
 	<h1>Demo PWA</h1>
 
+	<img src="question-mark.png" alt="Question Mark">
 	<h2>Random Question:</h2>
 	<p>{@html question}</p>
 	<p>true or false?</p>
