@@ -1,5 +1,5 @@
 var cacheName = "v9";
-var filesToCache = ["/offline.html"]
+var filesToCache = ["/offline.html", "/question-mark.png"]
 let SWPort;
 let SWactivated = false;
 let SWinstalled = false;
