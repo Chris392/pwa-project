@@ -1,4 +1,6 @@
 <script>
+	import convertVapidKey from 'convert-vapid-public-key';
+
 	export let states = [];
 
 	const messageChannel = new MessageChannel();
@@ -9,6 +11,7 @@
 	let pushBtnVisible = false;
 	let registeredSW = false;
 	let permissionGranted = false;
+	let isSubscribed = false;
 	let SWregistration;
 
 
@@ -18,6 +21,13 @@
 			console.log('Registrierung erfolgreich.');
 			registeredSW = true;
 			SWregistration = reg;
+
+			SWregistration.pushManager.getSubscription().then(sub => {
+				if(sub !== null){
+					permissionGranted = true;
+					isSubscribed = true;
+				}
+			})
 		}).catch(function(error) {
 			// Registrierung fehlgeschlagen
 			console.log('Registrierung fehlgeschlagen: ' + error);
@@ -82,8 +92,22 @@
 		}
 
 		if (permissionGranted){
-			const subscription = await SWregistration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: new Uint8Array(4)})
+			SWregistration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: convertVapidKey('BFagsG4NMfunV135Q8FY-0KCyI-2hk2GDsNTRgtVxEfcrbVu-Sw067pxQNKy4xan-6anwjyGFRlYe-0eNzbpLyQ')})
+				.then(sub => {
+					console.log("Subscription successfull!", sub)
+					isSubscribed = true;
+				})
 		}
+	}
+
+	function unsubscribe(){
+		SWregistration.pushManager.getSubscription().then( sub => {
+			if(sub){
+				sub.unsubscribe();
+				isSubscribed = false;
+				permissionGranted = false;
+			}
+		})
 	}
 
 
@@ -98,10 +122,19 @@
 	{:else}
 		<p>PWA-Installation not available</p>
 	{/if}
-	{#if pushBtnVisible && registeredSW}
+	{#if pushBtnVisible && registeredSW && !isSubscribed}
 	<button on:click={editPushPermission}>Edit Push Permission</button>
 	{:else}
-		<p>Push Manager not available</p>
+		{#if isSubscribed}
+			<p>You are Subscribed for Push-Notifications</p>
+		{:else if permissionGranted}
+			<p>Push Permission granted</p>
+		{:else}
+			<p>Push Manager not available</p>
+		{/if}
+	{/if}
+	{#if isSubscribed}
+		<button on:click={unsubscribe}>Unsubscribe</button>
 	{/if}
 
 	<h2>Event Log:</h2>

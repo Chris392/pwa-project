@@ -60,6 +60,19 @@ self.addEventListener("activate", evt => {
     )
 })
 
+// Generic Mathod for push Messages
+self.addEventListener("push", evt => {
+    let data;
+    if(evt.data) {
+        data = evt.data.json();
+    } else {
+        data = {title: 'Generic Message'}
+    }
+    self.registration.showNotification(data.title, {
+        body: data.body
+    })
+})
+
 
 
 
